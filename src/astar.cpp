@@ -6,7 +6,7 @@ using namespace std;
 
 Path astar_search(GamePosition &start, GamePosition &goal) {
   priority_queue<Path> queue{};
-  unordered_set<shared_ptr<GamePosition>, GamePositionHash,
+  unordered_set<shared_ptr<GamePosition>, GamePositionPointerHash,
                 GamePositionPointerEqual>
       done{};
 

@@ -5,7 +5,7 @@
 
 class GamePosition {
 public:
-  explicit GamePosition(std::vector<std::vector<int>> board)
+  explicit GamePosition(std::vector<std::vector<int>> &board)
       : size{board.size()}, board{board}, next{} {}
   explicit GamePosition(unsigned size);
   explicit GamePosition(const GamePosition &game)
@@ -28,7 +28,7 @@ private:
 
 unsigned heuristic(GamePosition &node, GamePosition &goal);
 
-struct GamePositionHash {
+struct GamePositionPointerHash {
   std::size_t operator()(const std::shared_ptr<GamePosition> &node) const {
     return node->hash();
   }

@@ -18,15 +18,16 @@ bool Path::add(std::shared_ptr<GamePosition> node, unsigned heuristic) {
   return true;
 }
 
-std::ostream &Path::operator<<(std::ostream &os) const {
+std::ostream &operator<<(std::ostream &os, const Path &path) {
   os << "----------------------" << endl;
-  for (auto node : nodes) {
+  for (auto node : path.nodes) {
     for (auto i{0U}; i < node->get_size(); i++) {
       for (auto j{0U}; j < node->get_size(); j++) {
         os << (*node)[i][j] << " ";
       }
       os << endl;
     }
+    os << endl;
   }
   os << "----------------------" << endl;
   return os;
