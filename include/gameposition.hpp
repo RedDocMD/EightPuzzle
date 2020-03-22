@@ -14,6 +14,7 @@ public:
   GamePosition &operator=(const GamePosition &other);
   GamePosition &operator=(GamePosition &&other);
   bool operator==(const GamePosition &other) const;
+  std::vector<int> &operator[](unsigned int pos) { return board[pos]; }
   void eval_next();
   unsigned get_size() const { return size; }
 
@@ -22,3 +23,5 @@ private:
   std::vector<std::vector<int>> board;
   std::vector<std::shared_ptr<GamePosition>> next;
 };
+
+unsigned heuristic(GamePosition &node, GamePosition &goal);

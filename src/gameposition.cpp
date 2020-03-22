@@ -1,9 +1,13 @@
 #include "gameposition.hpp"
 
+#include <cmath>
+#include <exception>
 #include <random>
 #include <unordered_set>
 
 using namespace std;
+
+pair<unsigned, unsigned> find(GamePosition &node, int num);
 
 GamePosition::GamePosition(unsigned size) {
   this->size = size;
@@ -18,8 +22,8 @@ GamePosition::GamePosition(unsigned size) {
   auto pos{pos_gen(dre)};
   auto posx{pos / size}, posy{pos % size};
 
-  for (auto i = 0U; i < size; i++) {
-    for (auto j = 0U; j < size; j++) {
+  for (auto i{0U}; i < size; i++) {
+    for (auto j{0U}; j < size; j++) {
       if (!(i == posx && j == posy)) {
         auto el{num_gen(dre)};
         while (done.find(el) != done.end())
@@ -45,7 +49,7 @@ GamePosition &GamePosition::operator=(const GamePosition &other) {
   size = other.size;
   board = other.board;
   next = other.next;
-  
+
   return *this;
 }
 
@@ -64,8 +68,8 @@ GamePosition &GamePosition::operator=(GamePosition &&other) {
 bool GamePosition::operator==(const GamePosition &other) const {
   if (size != other.size)
     return false;
-  for (auto i = 0U; i < size; i++) {
-    for (auto j = 0U; j < size; j++) {
+  for (auto i{0U}; i < size; i++) {
+    for (auto j{0U}; j < size; j++) {
       if (board[i][j] != other.board[i][j])
         return false;
     }
@@ -75,8 +79,8 @@ bool GamePosition::operator==(const GamePosition &other) const {
 
 void GamePosition::eval_next() {
   pair<int, int> empty_position;
-  for (auto i = 0U; i < size; i++) {
-    for (auto j = 0U; j < size; j++) {
+  for (auto i{0U}; i < size; i++) {
+    for (auto j{0U}; j < size; j++) {
       if (board[i][j] == 0) {
         empty_position = make_pair(i, j);
         break;
@@ -115,4 +119,28 @@ void GamePosition::eval_next() {
     new_next_board[empty_position.first][empty_position.second + 1] = 0;
     next.push_back(make_shared<GamePosition>(GamePosition(new_next_board)));
   }
+}
+
+unsigned heuristic(GamePosition &node, GamePosition &goal) {
+  if (node.get_size() != goal.get_size())
+    throw invalid_argument("GamePosition sizes don't match");
+  auto sum{0U};
+  for (auto i{0U}; i < node.get_size(); i++) {
+    for (auto j{0U}; j < node.get_size(); j++) {
+      auto goal_pos = find(goal, node[i][j]);
+      sum += abs(static_cast<int>(i - goal_pos.first)) +
+             abs(static_cast<int>(j - goal_pos.second));
+    }
+  }
+  return sum;
+}
+
+pair<unsigned, unsigned> find(GamePosition &node, int num) {
+  for (auto i{0U}; i < node.get_size(); i++) {
+    for (auto j{0U}; j < node.get_size(); j++) {
+      if (num == node[i][j])
+        return make_pair(i, j);
+    }
+  }
+  throw invalid_argument("Invalid GamePosition");
 }
