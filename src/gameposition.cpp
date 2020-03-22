@@ -7,7 +7,7 @@
 
 using namespace std;
 
-pair<unsigned, unsigned> find(GamePosition &node, int num);
+pair<unsigned, unsigned> find_position(GamePosition &node, int num);
 
 GamePosition::GamePosition(unsigned size) {
   this->size = size;
@@ -127,7 +127,7 @@ unsigned heuristic(GamePosition &node, GamePosition &goal) {
   auto sum{0U};
   for (auto i{0U}; i < node.get_size(); i++) {
     for (auto j{0U}; j < node.get_size(); j++) {
-      auto goal_pos = find(goal, node[i][j]);
+      auto goal_pos = find_position(goal, node[i][j]);
       sum += abs(static_cast<int>(i - goal_pos.first)) +
              abs(static_cast<int>(j - goal_pos.second));
     }
@@ -135,7 +135,7 @@ unsigned heuristic(GamePosition &node, GamePosition &goal) {
   return sum;
 }
 
-pair<unsigned, unsigned> find(GamePosition &node, int num) {
+pair<unsigned, unsigned> find_position(GamePosition &node, int num) {
   for (auto i{0U}; i < node.get_size(); i++) {
     for (auto j{0U}; j < node.get_size(); j++) {
       if (num == node[i][j])
@@ -143,4 +143,11 @@ pair<unsigned, unsigned> find(GamePosition &node, int num) {
     }
   }
   throw invalid_argument("Invalid GamePosition");
+}
+
+size_t GamePosition::hash() const {
+  size_t sum{0U};
+  for (auto p{0U}; p < size; p++)
+    sum += sum * p + board[p / size][p % size];
+  return sum;
 }
