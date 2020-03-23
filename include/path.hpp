@@ -10,10 +10,15 @@ class Path {
   friend std::ostream &operator<<(std::ostream &os, const Path &path);
 
 public:
-  explicit Path() : nodes{}, distance{0}, heuristic{0} {}
+  Path() : nodes{}, distance{0}, heuristic{0} {}
+  Path(const Path &path);
+  Path(Path &&path);
+  ~Path() = default;
   explicit Path(GamePosition *node, unsigned heuristic);
   bool add(GamePosition *node, unsigned heuristic);
   bool operator<(const Path &other) const;
+  Path &operator=(const Path &path);
+  Path &operator=(Path &&path);
   GamePosition *last() { return *(nodes.end() - 1); }
 
 private:
