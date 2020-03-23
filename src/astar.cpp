@@ -6,11 +6,12 @@ using namespace std;
 
 Path astar_search(GamePosition &start, GamePosition &goal) {
   priority_queue<Path> queue{};
-  unordered_set<shared_ptr<GamePosition>, GamePositionPointerHash,
+  unordered_set<GamePosition *, GamePositionPointerHash,
                 GamePositionPointerEqual>
       done{};
 
-  queue.push(Path{start, heuristic(start, goal)});
+  Path first{&start, heuristic(start, goal)};
+  queue.push(first);
 
   while (!queue.empty()) {
     auto best = queue.top();
@@ -22,10 +23,10 @@ Path astar_search(GamePosition &start, GamePosition &goal) {
 
     last->eval_next();
     for (auto next : last->get_next()) {
-      if (done.find(next) != done.end())
+      if (done.find(next.get()) != done.end())
         continue;
       auto new_path{best};
-      if (new_path.add(next, heuristic(*next, goal))) {
+      if (new_path.add(next.get(), heuristic(*next, goal))) {
         if (*next == goal)
           return new_path;
         else

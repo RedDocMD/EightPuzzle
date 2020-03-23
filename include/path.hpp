@@ -11,13 +11,13 @@ class Path {
 
 public:
   explicit Path() : nodes{}, distance{0}, heuristic{0} {}
-  explicit Path(GamePosition &node, unsigned heuristic);
-  bool add(std::shared_ptr<GamePosition> node, unsigned heuristic);
+  explicit Path(GamePosition *node, unsigned heuristic);
+  bool add(GamePosition *node, unsigned heuristic);
   bool operator<(const Path &other) const;
-  std::shared_ptr<GamePosition> last() { return *(nodes.end() - 1); }
+  GamePosition *last() { return *(nodes.end() - 1); }
 
 private:
-  std::vector<std::shared_ptr<GamePosition>> nodes;
+  std::vector<GamePosition *> nodes;
   unsigned distance;
   unsigned heuristic;
 };

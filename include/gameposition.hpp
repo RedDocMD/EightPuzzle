@@ -29,14 +29,13 @@ private:
 unsigned heuristic(GamePosition &node, GamePosition &goal);
 
 struct GamePositionPointerHash {
-  std::size_t operator()(const std::shared_ptr<GamePosition> &node) const {
+  std::size_t operator()(const GamePosition *node) const {
     return node->hash();
   }
 };
 
 struct GamePositionPointerEqual {
-  bool operator()(const std::shared_ptr<GamePosition> &lhs,
-                  const std::shared_ptr<GamePosition> &rhs) const {
+  bool operator()(const GamePosition *lhs, const GamePosition *rhs) const {
     return *lhs == *rhs;
   }
 };
