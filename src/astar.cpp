@@ -27,7 +27,7 @@ Path astar_search(GamePosition *start, GamePosition *goal) {
 
     last->eval_next();
     for (auto next : last->get_next()) {
-      if (done.find(next.get()) != done.end())
+      if (done.find(next) != done.end())
         continue;
       auto new_path{*best};
       if (new_path.add(next, heuristic(*next, *goal))) {
