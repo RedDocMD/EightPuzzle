@@ -36,6 +36,7 @@ Path astar_search(GamePosition *start, GamePosition *goal) {
           queue.push(make_shared<Path>(new_path));
       }
     }
+    done.insert(last);
   }
   return Path();
 }
