@@ -9,10 +9,11 @@ using namespace std;
 
 pair<unsigned, unsigned> find_position(GamePosition &node, int num);
 
-GamePosition::GamePosition(unsigned size) {
+GamePosition::GamePosition(unsigned size, NodeStash *stash) {
   this->size = size;
   this->board = vector<vector<int>>(size, vector<int>(size, 0));
   this->next = {};
+  this->stash = stash;
 
   default_random_engine dre{};
   uniform_int_distribution<int> pos_gen(0, size * size - 1);
@@ -35,20 +36,32 @@ GamePosition::GamePosition(unsigned size) {
   }
 }
 
+GamePosition::GamePosition(const GamePosition &game)
+    : size{game.size}, board{game.board}, stash{game.stash} {
+  next = vector<GamePosition *>();
+  for (auto node : game.next)
+    next.push_back(node);
+}
+
 GamePosition::GamePosition(GamePosition &&game) {
   size = game.size;
   board = std::move(game.board);
   next = std::move(game.next);
+  stash = game.stash;
 
   game.size = 0;
   game.board = {};
   game.next = {};
+  game.stash = nullptr;
 }
 
 GamePosition &GamePosition::operator=(const GamePosition &other) {
   size = other.size;
   board = other.board;
-  next = other.next;
+  next = vector<GamePosition *>();
+  for (auto node : other.next)
+    next.push_back(node);
+  stash = other.stash;
 
   return *this;
 }
@@ -57,10 +70,12 @@ GamePosition &GamePosition::operator=(GamePosition &&other) {
   size = other.size;
   board = std::move(other.board);
   next = std::move(other.next);
+  stash = other.stash;
 
   other.size = 0;
   other.board = {};
   other.next = {};
+  other.stash = nullptr;
 
   return *this;
 }
@@ -93,7 +108,14 @@ void GamePosition::eval_next() {
     new_next_board[empty_position.first][empty_position.second] =
         new_next_board[empty_position.first - 1][empty_position.second];
     new_next_board[empty_position.first - 1][empty_position.second] = 0;
-    next.push_back(make_shared<GamePosition>(GamePosition(new_next_board)));
+    if (stash->check(new_next_board)) {
+      next.push_back(stash->get(new_next_board).get());
+    } else {
+      auto node =
+          make_unique<GamePosition>(GamePosition(new_next_board, stash));
+      next.push_back(node.get());
+      stash->push(new_next_board, node);
+    }
   }
 
   if (empty_position.first < size - 1) {
@@ -101,7 +123,14 @@ void GamePosition::eval_next() {
     new_next_board[empty_position.first][empty_position.second] =
         new_next_board[empty_position.first + 1][empty_position.second];
     new_next_board[empty_position.first + 1][empty_position.second] = 0;
-    next.push_back(make_shared<GamePosition>(GamePosition(new_next_board)));
+    if (stash->check(new_next_board)) {
+      next.push_back(stash->get(new_next_board).get());
+    } else {
+      auto node =
+          make_unique<GamePosition>(GamePosition(new_next_board, stash));
+      next.push_back(node.get());
+      stash->push(new_next_board, node);
+    }
   }
 
   if (empty_position.second > 0) {
@@ -109,7 +138,14 @@ void GamePosition::eval_next() {
     new_next_board[empty_position.first][empty_position.second] =
         new_next_board[empty_position.first][empty_position.second - 1];
     new_next_board[empty_position.first][empty_position.second - 1] = 0;
-    next.push_back(make_shared<GamePosition>(GamePosition(new_next_board)));
+    if (stash->check(new_next_board)) {
+      next.push_back(stash->get(new_next_board).get());
+    } else {
+      auto node =
+          make_unique<GamePosition>(GamePosition(new_next_board, stash));
+      next.push_back(node.get());
+      stash->push(new_next_board, node);
+    }
   }
 
   if (empty_position.second < size - 1) {
@@ -117,7 +153,14 @@ void GamePosition::eval_next() {
     new_next_board[empty_position.first][empty_position.second] =
         new_next_board[empty_position.first][empty_position.second + 1];
     new_next_board[empty_position.first][empty_position.second + 1] = 0;
-    next.push_back(make_shared<GamePosition>(GamePosition(new_next_board)));
+    if (stash->check(new_next_board)) {
+      next.push_back(stash->get(new_next_board).get());
+    } else {
+      auto node =
+          make_unique<GamePosition>(GamePosition(new_next_board, stash));
+      next.push_back(node.get());
+      stash->push(new_next_board, node);
+    }
   }
 }
 
