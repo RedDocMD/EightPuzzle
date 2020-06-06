@@ -1,5 +1,4 @@
-# FifteenPuzzle
-Attempts to solve the Fifteen puzzle by using A* search
+# 8 Puzzle
 
-At the moment, it successfully solves a smaller variant of this puzzle, the **Eight puzzle**, by using vanilla A* search.
-The Fifteen Puzzle plainly takes too long to solve and to much memory. An improved heuristic and switching to *iterative-deepening A* search* will help.
+This solves the *8 puzzle* using A* star search algorithm. It uses the Manhattan distance heuristic.
+The memory efficiency of the puzzle has been improved by using a `NodeStash` to store game state objects while the search algorithm itself stores only lists of pointers to the objects.
