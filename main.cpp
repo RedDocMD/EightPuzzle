@@ -17,9 +17,8 @@ int main(int argc, char const *argv[]) {
 
   stash_eight->push(start_board_eight, start_position_eight);
   stash_eight->push(goal_board_eight, goal_position_eight);
-  auto path_eight = astar_search(
-    stash_eight->get(start_board_eight).get(),
-    stash_eight->get(goal_board_eight).get());
+  auto path_eight = astar_search(stash_eight->get(start_board_eight).get(),
+                                 stash_eight->get(goal_board_eight).get());
   cout << path_eight << endl;
   return 0;
 }
