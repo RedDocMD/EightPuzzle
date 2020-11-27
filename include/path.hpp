@@ -20,6 +20,7 @@ public:
   Path &operator=(const Path &path);
   Path &operator=(Path &&path);
   GamePosition *last() { return *(nodes.end() - 1); }
+  size_t size() const { return nodes.size(); }
 
 private:
   std::vector<GamePosition *> nodes;

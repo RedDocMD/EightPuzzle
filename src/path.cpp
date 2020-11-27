@@ -59,11 +59,18 @@ bool Path::add(GamePosition *node, unsigned heuristic) {
 std::ostream &operator<<(std::ostream &os, const Path &path) {
   os << "----------------------" << endl;
   for (auto node : path.nodes) {
+    os << "-------" << endl;
     for (auto i{0U}; i < node->get_size(); i++) {
+      os << "|";
       for (auto j{0U}; j < node->get_size(); j++) {
-        os << (*node)[i][j] << " ";
+        if ((*node)[i][j]) {
+          os << (*node)[i][j];
+        } else {
+          os << " ";
+        }
+        os << "|";
       }
-      os << endl;
+      os << endl << "-------" << endl;
     }
     os << endl;
   }
